@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import __dirname from '../utils.js';
-import CartsManager from '../dao/FileSystem/carts.manager.js';
+/* import CartsManager from '../dao/FileSystem/cartManager.fileSystem.js'; */  // <= File system
+import CartManager from '../dao/mongoDB/cartManager.mongoDb.js';
 
-const path = __dirname + '/files/carts.json';
+/* const path = __dirname + '/files/carts.json'; */ // <= File system
 
-const cm = new CartsManager(path);
+/* const cm = new CartsManager(path); */ // <= File system
+const cm = new CartManager();
 
 const router = Router();
 
@@ -43,7 +45,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.post('/:cid/product/:pid', async (req, res) => {
+/* router.post('/:cid/product/:pid', async (req, res) => {  // <= File system
     const { cid, pid } = req.params;
 
     try {
@@ -53,6 +55,6 @@ router.post('/:cid/product/:pid', async (req, res) => {
         console.log(error);
         res.status(500).json({message: 'Error al agregar el producto al carrito'});
     }
-} )
+} ) */
 
 export default router;

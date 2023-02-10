@@ -24,12 +24,8 @@ class ProductManager {
 
         await this.getProducts()
 
-        try {
-            const prodById = this.products.find(prod => prod.id === idRef);
-            return prodById ? prodById : {};
-        } catch (error) {
-            console.log(error);
-        }
+        const prodById = this.products.find(prod => prod.id === idRef);
+        return prodById ? prodById : {};
     }
 
     addProduct = async (product) => {

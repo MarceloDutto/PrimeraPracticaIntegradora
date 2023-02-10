@@ -1,7 +1,7 @@
 import fs, { existsSync, writeFile, promises } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import __dirname from '../../utils.js';
-import ProductManager from './products.manager.js';
+import ProductManager from './productManager.fileSystem.js';
 
 const productsPath = __dirname + '/files/products.json';
 const pm = new ProductManager(productsPath);

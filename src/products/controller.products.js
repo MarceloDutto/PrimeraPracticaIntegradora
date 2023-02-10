@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import ProductManager from '../dao/FileSystem/products.manager.js';
-import __dirname from '../utils.js';
+/* import ProductManager from '../dao/FileSystem/productManager.fileSystem.js'; */ // <= File system
+import ProductManager from '../dao/mongoDB/productManager.MongoDb.js'; // <= Mongo DB
+import __dirname, { uploader } from '../utils.js';
 
 const path = __dirname + '/files/products.json';
 
-const pm = new ProductManager(path)
+/* const pm = new ProductManager(path) */ // <= File system
+const pm = new ProductManager() // <= MongoDB
 
 const router = Router();
 
@@ -36,11 +38,14 @@ router.get('/:pid', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', uploader.single('file'), async (req, res) => {
     const { name, description, category, code, price, thumbnail=[], stock } = req.body;
     if(!name || !description || !category || !code || !price || !stock) return res.status(400).json({message: 'Error en el ingreso de los campos'});
 
-    const product = {
+    const imgPath = req.file?.path;
+    thumbnail.push(imgPath);
+
+    const newProduct = {
         name,
         description,
         category,
@@ -51,7 +56,7 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const response = await pm.addProduct(product);
+        const response = await pm.addProduct(newProduct);
         res.status(201).json({message: response });
     } catch (error) {
         res.status(500).json({message: 'Error al ingresar el producto'});
@@ -85,11 +90,20 @@ router.delete('/:pid', async (req, res) => {
 
     try {
         const response = await pm.deleteProduct(pid);
-        res.json({message: response})
+        res.json({message: response});
     } catch (error) {
         res.status(500).json({message: 'Error al eliminar el producto'}) 
     }
 })
 
+// dev
+router.delete('/', async (req, res) => {
+    try {
+        const response = await pm.deleteAllProducts();
+        res.json({message: response});
+    } catch (error) {
+        res.status(500).json({message: 'Error al eliminar los productos'})
+    }
+})
 
 export default router;

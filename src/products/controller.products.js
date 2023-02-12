@@ -106,4 +106,13 @@ router.delete('/', async (req, res) => {
     }
 })
 
+//dev
+router.post('/populate', async (req, res) => {
+    try {
+        const response = await pm.populateDB();
+        res.json({message: response});
+    } catch (error) {
+        res.json({message: `No se pudo cargar a la base de datos. Error: ${error}`});
+    }
+})
 export default router;

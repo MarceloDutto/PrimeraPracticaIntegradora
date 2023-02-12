@@ -1,10 +1,12 @@
 import Product from "./models/products.models.js";
+import fileManager from './../FileSystem/fileManager.fileSystem.js';
+const fm = new fileManager('products.json')
 
 class ProductManager {
 
     getProducts = async () => {
         try {
-            const products = await Product.find();
+            const products = await Product.find().lean();
             return products;
         } catch (error) {
             console.log(error)
@@ -48,8 +50,26 @@ class ProductManager {
     }
 
     deleteAllProducts = async () => {
-        await Product.deleteMany();
-        return 'Todos los productos fueron eliminados'
+        try {
+            await Product.deleteMany();
+            return 'Todos los productos fueron eliminados'
+        } catch (error) {
+            console.log(error);
+            return `Error al eliminar los productos: Error: ${error}`;
+        }
+    }
+
+    populateDB = async () => {
+        try {
+            const products = await fm.loadItems();
+
+            await Product.insertMany(products);
+            return 'Productos cargados'
+
+        } catch (error) {
+            console.log(error);
+            return `Error al cargar los productos: Error: ${error}`;
+        }
     }
 }
 

@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-/* router.post('/:cid/product/:pid', async (req, res) => {  // <= File system
+ router.patch('/:cid/product/:pid', async (req, res) => {
     const { cid, pid } = req.params;
 
     try {
@@ -55,6 +55,6 @@ router.post('/', async (req, res) => {
         console.log(error);
         res.status(500).json({message: 'Error al agregar el producto al carrito'});
     }
-} ) */
+}) 
 
 export default router;

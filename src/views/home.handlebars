@@ -5,11 +5,16 @@
         {{#if showProducts}}
             {{#each products}}
                 <div class="card">
-                    <p class="product-features">Nombre: {{this.name}}</p>
-                    <p class="product-features">Características: {{this.description}}</p>
-                    <p class="product-features">Categoría: {{this.category}}</p>
-                    <p class="product-features">Precio: {{this.price}}</p>
-                    <p class="product-features">Disponible: {{this.stock}} unidades</p>
+                    <div class="product-image">
+                        <img src="{{this.thumbnail}}" alt="">
+                    </div>
+                    <div class="product-info">
+                        <p class="product-features">Nombre: {{this.name}}</p>
+                        <p class="product-features">Características: {{this.description}}</p>
+                        <p class="product-features">Categoría: {{this.category}}</p>
+                        <p class="product-features">Precio: {{this.price}}</p>
+                        <p class="product-features">Disponible: {{this.stock}} unidades</p>
+                    </div>
                 </div>
             {{/each}}
         {{else}}

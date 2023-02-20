@@ -4,12 +4,38 @@ const fm = new fileManager('products.json')
 
 class ProductManager {
 
-    getProducts = async () => {
+    getProducts = async (limit, page, query, sort) => {
+        let filter = {};
+
+        query? filter = {category: query} : filter = {};
+
+        const options = {
+            limit,
+            page,
+            sort: {price: sort}
+        }
+
         try {
-            const products = await Product.find().lean();
-            return products;
+            const response = await Product.paginate(filter, options);
+            return {
+                status: "success",
+                payload: response,
+                totalPages: response.totalPages,
+                prevPage: response.prevPage,
+                nextPage: response.nextPage,
+                page: response.page,
+                hasPrevPage: response.hasPrevPage,
+                hasNextPage: response.hasNextPage,
+                prevLink: `http://localhost:3000/api/products?limit=${limit}&page=${response.prevPage}`,
+                nextLink: `http://localhost:3000/api/products?limit=${limit}&page=${response.prevPage}`
+
+            } 
         } catch (error) {
             console.log(error)
+            return {
+                status: "error",
+                payload: []
+            }
         }
     }
 

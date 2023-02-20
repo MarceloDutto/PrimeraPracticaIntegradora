@@ -11,14 +11,14 @@ const pm = new ProductManager() // <= MongoDB
 const router = Router();
 
 router.get('/', async (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page)  || 1; 
+    const query = req.query.query || null;
+    const sort = req.query.sort || null;
+    
     try {
-        const products = await pm.getProducts();
-
-        const { limit } = req.query;
-        if(!limit) return res.json(products);
-        const slicedProducts = products.slice(0, limit);
-        res.json(slicedProducts);
-
+        const products = await pm.getProducts(limit, page, query, sort);
+        return res.json(products);
     } catch (error) {
         console.log(error);
         res.status(500).json({message: 'Error al acceder a los productos'});
@@ -42,8 +42,12 @@ router.post('/', uploader.single('file'), async (req, res) => {
     const { name, description, category, code, price, thumbnail=[], stock } = req.body;
     if(!name || !description || !category || !code || !price || !stock) return res.status(400).json({message: 'Error en el ingreso de los campos'});
 
-    const imgPath = req.file?.path;
-    thumbnail.push(imgPath);
+    const products = await pm.getProducts();
+    if(products.find(prod => prod.code === code)) return res.status(500).json({message: 'El producto ya se encuentra ingresado en la base de datos'});
+
+    const imgPath = req.file?.filename;
+    const relativePath = `/img/${imgPath}`;
+    thumbnail.push(relativePath);
 
     const newProduct = {
         name,

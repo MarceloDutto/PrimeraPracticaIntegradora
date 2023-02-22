@@ -13,11 +13,13 @@ const router = Router();
 router.get('/', async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const page = parseInt(req.query.page)  || 1; 
-    const query = req.query.query || null;
-    const sort = req.query.sort || null;
+    const query = req.query.query || "";
+    const sort = req.query.sort || "";
+
+    const sortLowercase = sort.toLowerCase()  ;
     
     try {
-        const products = await pm.getProducts(limit, page, query, sort);
+        const products = await pm.getProducts(limit, page, query, sortLowercase);
         return res.json(products);
     } catch (error) {
         console.log(error);

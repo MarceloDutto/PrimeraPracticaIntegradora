@@ -1,42 +1,39 @@
-const socket = io();
+const prevButton = document.querySelector("#prevButton");
+const nextButton = document.querySelector("#nextButton");
+const btn_addToCart = document.querySelectorAll(".cartButton");
 
-const renderProducts = (data) => {
-    let productsContainer = document.querySelector("#products-container");
-    productsContainer.innerHTML = '';
-    
-    if(data.length === 0) {
-        productsContainer.innerHTML = '<p class="error-text">¡Lo sentimos! Temporalmente no podemos mostrarte nuestros productos. Regresa más tarde. 😔</p>'
-    } else {
-        data.forEach(product => {
-            const { name, description, category, price, thumbnail, stock} = product;
-            let productDiv = document.createElement('div');
-            productDiv.classList.add("card"); 
-            
-            let divContent = `
-            <div class="product-image">
-                <img src="${thumbnail}" alt="imagen de producto">
-            </div>
-            <div class="product-info">
-                <p class="product-features">Nombre: ${name}</p>
-                <p class="product-features">Características: ${description}</p>
-                <p class="product-features">Categoría: ${category}</p>
-                <p class="product-features">Precio: ${price}</p>
-                <p class="product-features">Disponible: ${stock} unidades</p>
-            </div>`
-    
-            productDiv.innerHTML = divContent;
-    
-            productsContainer.appendChild(productDiv);
-        });
+let cartId;
+
+const createCart = async () => {
+    try {
+        await fetch(`http://localhost:3000/api/carts`, {method: "post"});
+        const response = await fetch(`http://localhost:3000/api/carts`, {method: "get"});
+        const data = await response.json();
+        const lastElement = await data[data.length - 1];
+        cartId = lastElement._id
+    } catch (error) {
+        console.log(error);
     }
 }
 
+createCart()
 
-socket.on('newProduct', data => {
-    renderProducts(data);
+if(prevButton.getAttribute("href") === "") prevButton.style.visibility = "hidden";
+if(nextButton.getAttribute("href") === "") nextButton.style.visibility = "hidden";
+
+
+btn_addToCart.forEach(btn => {
+    btn.addEventListener('click', e => {
+        e.preventDefault();
+        const eventId = btn.getAttribute("id");
+        addToCart(eventId)
+    })
 })
 
-
-socket.on('productDeleted', data => {
-    renderProducts(data);
-})
+const addToCart = async (pid) => {
+    try {
+        await fetch(`http://localhost:3000/api/carts/${cartId}/product/${pid}`, {method: "post"});
+    } catch (error) {
+        console.log(error);
+    }
+}   

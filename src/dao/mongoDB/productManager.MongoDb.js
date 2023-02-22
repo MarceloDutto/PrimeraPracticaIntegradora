@@ -6,7 +6,6 @@ class ProductManager {
 
     getProducts = async (limit, page, query, sort) => {
         let filter = {};
-
         query? filter = {category: query} : filter = {};
 
         const options = {
@@ -16,26 +15,22 @@ class ProductManager {
         }
 
         try {
-            const response = await Product.paginate(filter, options);
-            return {
+            const data = await Product.paginate(filter, options);
+            const response = {
                 status: "success",
-                payload: response,
-                totalPages: response.totalPages,
-                prevPage: response.prevPage,
-                nextPage: response.nextPage,
-                page: response.page,
-                hasPrevPage: response.hasPrevPage,
-                hasNextPage: response.hasNextPage,
-                prevLink: `http://localhost:3000/api/products?limit=${limit}&page=${response.prevPage}`,
-                nextLink: `http://localhost:3000/api/products?limit=${limit}&page=${response.prevPage}`
-
+                payload: data,
+                totalPages: data.totalPages,
+                prevPage: data.prevPage,
+                nextPage: data.nextPage,
+                page: data.page,
+                hasPrevPage: data.hasPrevPage,
+                hasNextPage: data.hasNextPage,
+                prevLink: `http://localhost:3000/products?limit=${limit}&page=${data.prevPage}`,
+                nextLink: `http://localhost:3000/products?limit=${limit}&page=${data.nextPage}`
             } 
+            return response
         } catch (error) {
-            console.log(error)
-            return {
-                status: "error",
-                payload: []
-            }
+            console.log(error);
         }
     }
 

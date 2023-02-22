@@ -26,7 +26,7 @@ class CartManager {
     addCart = async () => {
         try {
             Cart.create({products: []});
-            return 'Carrito creado';
+            return {message: 'Carrito creado'};
         } catch (error) {
             console.log(error);
         }
@@ -39,7 +39,7 @@ class CartManager {
             const product = await pm.getProductById(pidRef);
             if(!product) return 'No se encontró el producto';
 
-            /* const prodIndex = cart.products.findIndex(prod => prod.product === `new ObjectId("${pidRef}")`); */
+            const prodIndex = cart.products.findIndex(prod => prod.product.equals(product._id));
             
             if(prodIndex !== -1) {
                 cart.products[prodIndex].quantity ++;
@@ -50,6 +50,70 @@ class CartManager {
                 await Cart.updateOne({_id: cidRef}, cart);
                 return 'Producto agregado al carrito';
             }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    updateProductsfromCart = async (cidRef, update) => {
+        try {
+            const cart = await this.getCartById(cidRef);
+            if(!cart) return 'No se encontró el carrito';
+
+            cart.products = update;
+            await Cart.updateOne({_id: cidRef}, cart);
+            return 'Productos actualizados';
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    updateQuantity = async (cidRef, pidRef, update) => {
+        try {
+            const cart = await this.getCartById(cidRef);
+            if(!cart) return 'No se encontró el carrito';
+
+            if(cart.products.length === 0) return 'El carrito no tiene productos';
+
+            const prodIndex = cart.products.findIndex(prod => prod.product.equals(pidRef));
+            if(prodIndex === -1) return 'El producto no se encontró en el carrito';
+
+            cart.products[prodIndex].quantity = update;
+            await Cart.updateOne({_id: cidRef}, cart);
+            return 'Producto actualizado';
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    deleteProductfromCart = async (cidRef, pidRef) => {
+        try {
+            const cart = await this.getCartById(cidRef);
+            if(!cart) return 'No se encontró el carrito';
+
+            if(cart.products.length === 0) return 'El carrito no tiene productos';
+
+            const prodIndex = cart.products.findIndex(prod => prod.product.equals(pidRef));
+            if(prodIndex === -1) return 'El producto no se encontró en el carrito';
+
+            cart.products.splice(prodIndex, 1);
+            await Cart.updateOne({_id: cidRef}, cart);
+            return 'Producto eliminado del carrito'
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    deleteProductsfromCart = async (cidRef) => {
+        try {
+            const cart = await this.getCartById(cidRef);
+            if(!cart) return 'No se encontró el carrito';
+
+            if(cart.products.length === 0) return 'El carrito no tiene productos';
+
+            cart.products = [];
+            await Cart.updateOne({_id: cidRef}, cart);
+            return 'Productos eliminados del carrito'
         } catch (error) {
             console.log(error);
         }

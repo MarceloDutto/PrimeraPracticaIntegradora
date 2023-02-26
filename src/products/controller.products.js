@@ -44,9 +44,9 @@ router.post('/', uploader.single('file'), async (req, res) => {
     const { name, description, category, code, price, thumbnail=[], stock } = req.body;
     if(!name || !description || !category || !code || !price || !stock) return res.status(400).json({message: 'Error en el ingreso de los campos'});
 
-    const products = await pm.getProducts();
-    if(products.find(prod => prod.code === code)) return res.status(500).json({message: 'El producto ya se encuentra ingresado en la base de datos'});
-
+    const products = await pm.getProductsByCode(code);
+    if(products.length !== 0) return res.status(500).json({message: 'El producto ya se encuentra ingresado en la base de datos'}); 
+    
     const imgPath = req.file?.filename;
     const relativePath = `/img/${imgPath}`;
     thumbnail.push(relativePath);
@@ -73,7 +73,7 @@ router.patch('/:pid', async (req, res) => {
     const { pid } = req.params;
     const { name, description, category, code, price, thumbnail, stock } = req.body;
 
-    const product = {
+    const updates = {
         name, 
         description, 
         category, 
@@ -84,6 +84,13 @@ router.patch('/:pid', async (req, res) => {
     }
 
     try {
+        const product = await pm.getProductById(pid);
+        if(Object.keys(product).length === 0) return res.status(404).json({message: 'Producto no encontrado'});
+
+        Object.keys(updates).forEach(key => {
+            if(updates[key] && updates[key] !== product[key]) product[key] = updates[key];
+        })
+
         const response = await pm.updateProduct(pid, product);
         res.json({message: response});
     } catch (error) {

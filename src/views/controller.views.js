@@ -19,7 +19,7 @@ router.get('/products', async (req, res) => {
 
     try {
         const response = await pm.getProducts(limit, page, query, sort);
-        products = response.payload.docs;
+        products = response.payload;
 
         products.length > 0 ? showProducts = true : showProducts = false;
         res.render('products.handlebars', {

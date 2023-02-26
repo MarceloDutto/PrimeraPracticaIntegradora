@@ -61,12 +61,14 @@ router.put('/:cid', async (req, res) => {
     const { cid } = req.params;
     const { products } = req.body;
 
+    if(!products) return res.status(400).json({message: 'No se enviaron los datos del producto correctamente'});
+    
     try {
         const response = await cm.updateProductsfromCart(cid, products);
         res.json({message: response});
     } catch (error) {
         console.log(error);
-        res.status(500).json({message: 'Error al agregar el actualizar los productos'});
+        res.status(500).json({message: 'Error al actualizar los productos'});
     }
 })
 

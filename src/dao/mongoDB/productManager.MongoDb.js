@@ -18,7 +18,7 @@ class ProductManager {
             const data = await Product.paginate(filter, options);
             const response = {
                 status: "success",
-                payload: data,
+                payload: data.docs,
                 totalPages: data.totalPages,
                 prevPage: data.prevPage,
                 nextPage: data.nextPage,
@@ -38,6 +38,16 @@ class ProductManager {
         try {
             const prodByID = await Product.findById(idRef);
             return prodByID ? prodByID : {}
+        } catch (error) {
+            console.log(error);
+            return {}
+        }
+    }
+
+    getProductsByCode = async (filter) => {
+        try {
+            const response = Product.find({code: filter})
+            return response
         } catch (error) {
             console.log(error);
         }

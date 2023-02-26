@@ -1,5 +1,8 @@
+import { isValidObjectId } from "mongoose";
 import Cart from "./models/carts.models.js";
 import ProductManager from "./productManager.MongoDb.js"
+
+
 
 const pm = new ProductManager();
 
@@ -20,6 +23,7 @@ class CartManager {
             return cartById ? cartById : {};
         } catch (error) {
             console.log(error);
+            return {}
         }
     }
 
@@ -37,7 +41,7 @@ class CartManager {
             const cart = await this.getCartById(cidRef);
             if(!cart) return 'No se encontró el carrito';
             const product = await pm.getProductById(pidRef);
-            if(!product) return 'No se encontró el producto';
+            if(Object.keys(product).length === 0) return 'Producto no encontrado en la base de datos';
 
             const prodIndex = cart.products.findIndex(prod => prod.product.equals(product._id));
             
@@ -55,14 +59,36 @@ class CartManager {
         }
     }
 
-    updateProductsfromCart = async (cidRef, update) => {
+    updateProductsfromCart = async (cidRef, products) => {
         try {
             const cart = await this.getCartById(cidRef);
             if(!cart) return 'No se encontró el carrito';
 
-            cart.products = update;
-            await Cart.updateOne({_id: cidRef}, cart);
-            return 'Productos actualizados';
+            let updateIsValid = true;
+            
+            await products.forEach(async prod => {
+                let id = prod.product._id;
+                const validId = isValidObjectId(id);
+                if(validId) {
+                    try {
+                        const response = await pm.getProductById(id);
+                        if(Object.keys(response).length === 0) updateIsValid = false;
+                    } catch (error) {
+                         console.log(error);
+                    }
+                } else {
+                    updateIsValid = false;
+                }
+                
+            });
+            
+            if(updateIsValid) {
+                cart.products = products;
+                await Cart.updateOne({_id: cidRef}, cart);
+                return 'Productos actualizados';
+            } else {
+                return 'Error al ingresar los productos'
+            }   
         } catch (error) {
             console.log(error);
         }

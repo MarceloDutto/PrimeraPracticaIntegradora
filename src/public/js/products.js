@@ -1,3 +1,4 @@
+const goToCartButton = document.querySelector("#goToCartButton")
 const prevButton = document.querySelector("#prevButton");
 const nextButton = document.querySelector("#nextButton");
 const btn_addToCart = document.querySelectorAll(".cartButton");
@@ -11,6 +12,7 @@ const createCart = async () => {
         const data = await response.json();
         const lastElement = await data[data.length - 1];
         cartId = lastElement._id
+        goToCartButton.setAttribute("href", `http://localhost:3000/carts/${cartId}`)
     } catch (error) {
         console.log(error);
     }
@@ -20,6 +22,7 @@ createCart()
 
 if(prevButton.getAttribute("href") === "") prevButton.style.visibility = "hidden";
 if(nextButton.getAttribute("href") === "") nextButton.style.visibility = "hidden";
+
 
 
 btn_addToCart.forEach(btn => {

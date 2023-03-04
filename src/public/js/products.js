@@ -7,7 +7,7 @@ let cartId;
 
 const createCart = async () => {
     try {
-        await fetch(`http://localhost:3000/api/carts`, {method: "post"});
+        /* await fetch(`http://localhost:3000/api/carts`, {method: "post"}); */
         const response = await fetch(`http://localhost:3000/api/carts`, {method: "get"});
         const data = await response.json();
         const lastElement = await data[data.length - 1];

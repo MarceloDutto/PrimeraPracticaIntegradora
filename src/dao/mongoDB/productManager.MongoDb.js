@@ -25,8 +25,8 @@ class ProductManager {
                 page: data.page,
                 hasPrevPage: data.hasPrevPage,
                 hasNextPage: data.hasNextPage,
-                prevLink: `http://localhost:3000/products?limit=${limit}&page=${data.prevPage}`,
-                nextLink: `http://localhost:3000/products?limit=${limit}&page=${data.nextPage}`
+                prevLink: `?limit=${limit}&page=${data.prevPage}`,
+                nextLink: `?limit=${limit}&page=${data.nextPage}`
             } 
             return response
         } catch (error) {

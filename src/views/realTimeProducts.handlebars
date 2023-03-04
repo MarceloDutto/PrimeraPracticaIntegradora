@@ -1,8 +1,26 @@
 <div class="container">
+    <div class="navButton-container">
+        <a href="" id="goToCartButton"><button class="navButton">Ir al carrito</button></a> 
+    </div>
     <h1 class="title">¡Bienvenido! Estos son los productos que tenemos disponibles.</h1>
 
     <div id="products-container"></div>
+
+    <div class="button-container">
+        <div>
+            <a href="" class="button" id="prevButton">
+                << Pagina anterior
+            </a>
+        </div>
+        <div>
+            <a href="" class="button" id="nextButton">
+                Pagina siguiente >>
+            </a>
+        </div>
+    </div>   
 </div>
 
+
+
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/home.js"></script>
+<script src="/js/realtimeproducts.js"></script>

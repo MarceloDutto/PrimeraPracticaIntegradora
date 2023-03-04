@@ -7,6 +7,9 @@ const config = {
         userDB: process.env.USER_DB,
         passDB: process.env.PASS_DB,
         hostDB: process.env.HOST_DB
+    },
+    session: {
+        sessionSecret: process.env.SESSION_SECRET
     }
 }
 

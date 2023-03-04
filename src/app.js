@@ -5,10 +5,9 @@ const httpServer = app.listen(port, () => {
     console.log(`Server running at port ${port}`);
 })
 
-const io = new Server(httpServer);
+export const io = new Server(httpServer);
 
 io.on('connection', socket => {
     console.log(`New client connected with id ${socket.id}`);
 })
 
-export default io;

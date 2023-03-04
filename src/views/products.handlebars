@@ -1,8 +1,9 @@
 <div class="container">
     <div class="navButton-container">
+        <a href="http://localhost:3000/profile" ><button class="navButton">Ver mi perfil</button></a> 
         <a href="" id="goToCartButton"><button class="navButton">Ir al carrito</button></a> 
     </div>
-    <h1 class="title">¡Bienvenido! Estos son los productos que tenemos disponibles.</h1>
+    <h1 class="title">¡Bienvenid@, {{user.first_name}}! Estos son los productos que tenemos disponibles.</h1>
 
     <div class="products-container">
         {{#if showProducts}}

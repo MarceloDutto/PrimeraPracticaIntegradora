@@ -5,7 +5,7 @@ form.addEventListener('submit', e => {
 
     const data = new FormData(form);
     const obj = {};
-
+    
     data.forEach((value, key) => obj[key] = value);
 
     const url = '/api/users';
@@ -14,7 +14,7 @@ form.addEventListener('submit', e => {
     }
     const method = 'POST'; 
     const body = JSON.stringify(obj);
-
+        
     fetch(url, {
         headers,
         method,
@@ -25,5 +25,4 @@ form.addEventListener('submit', e => {
     .then(() => {window.location.href = 'http://localhost:3000/login'})
     .catch(error => console.log(error))
 
-    
 })

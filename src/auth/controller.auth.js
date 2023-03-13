@@ -1,37 +1,48 @@
 import { Router } from "express";
-import User from "../dao/mongoDB/models/user.models.js";
+import passport from "passport";
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post('/', passport.authenticate('login', {failureRedirect: '/api/auth/failLogin'}), async (req, res) => {
     const adminEmail = 'adminCoder@coder.com';
     let role = 'usuario'
-    const { email, password } = req.body;
-
-    if(!email || !password) return res.status(400).json({error: 'Los datos ingresados no son correctos.'});
 
     try {
-        const user = await User.findOne({ email });
+        if(!req.user) return res.status(400).json({error: 'El usuario y la contraseña no coinciden'});
+ 
+        const { first_name, last_name, email } = req.user;
 
-        if(!user) return res.status(400).json({error: 'El usuario y la contraseña no coinciden'});
-        if(user.password !== password) return res.status(400).json({error: 'El usuario y la contraseña no coinciden.'});
         if(email === adminEmail) role = 'administrador';
-
-        const { first_name, last_name } = user;
 
         req.session.user = {
             first_name,
             last_name,
-            email: user.email,
+            email,
             role
         }
-    
-        res.json({message: 'Sesión iniciada.'})
-        
+        res.status(401).json({message: 'Sesión iniciada.'})
     } catch(error) {
         console.log(error);
         res.status(500).json({error: 'Error interno del servidor.'});
     }
+})
+
+router.get('/failLogin', (req, res) => {
+    res.status(400).json({message: 'Falló la autenticación'})
+})
+
+router.get('/github', passport.authenticate('github', {scope:['user:email']}), async (req, res) => {});
+
+router.get('/githubCallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
+    const adminEmail = 'adminCoder@coder.com';
+    let role = 'usuario'
+
+    req.session.user = req.user;
+
+    if(req.session.user.email === adminEmail) role = 'administrador';
+    req.session.user.role = role;
+
+    res.redirect('/products');
 })
 
 router.get('/logout', (req, res) => {

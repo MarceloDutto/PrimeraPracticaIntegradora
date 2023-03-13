@@ -90,3 +90,45 @@ a {
     text-decoration: none;
     color: blue;
 }
+
+.line {
+    height: 1px;
+    width: 330px;
+    opacity: 30%;
+    background-color: #012C3D;
+    margin-bottom: 20px;
+}
+
+.loginDiv {
+    width: 40%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.loginButton {
+    width: 300px;
+    height: 60px;
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: .5px solid #012C3D;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.loginGithubImg {
+    position: absolute;
+    width: 140px;
+    object-fit: cover;
+}
+
+.loginButton:hover {
+    border: 1.5px solid #012C3D;
+    background-color: #f7f8f3d2;
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
+}

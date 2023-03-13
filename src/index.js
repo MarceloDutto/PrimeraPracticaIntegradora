@@ -4,9 +4,11 @@ import handlebars from 'express-handlebars';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import morgan from 'morgan';
+import passport, { Passport } from 'passport';
 import __dirname from './utils.js'
 import config from './config/index.js';
 import router from './router/index.js';
+import initializePassport from './config/passport.js';
 
 const port = config.port;
 const { userDB, passDB, hostDB } = config.db
@@ -31,6 +33,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.set('strictQuery', false);
 mongoose.connect(`mongodb+srv://${userDB}:${passDB}@${hostDB}/?retryWrites=true&w=majority`, error => {

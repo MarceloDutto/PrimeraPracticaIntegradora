@@ -1,7 +1,8 @@
 import { Router } from 'express';
 /* import ProductManager from '../dao/FileSystem/productManager.fileSystem.js'; */ // <= File system
 import ProductManager from '../dao/mongoDB/productManager.MongoDb.js'; // <= Mongo DB
-import __dirname, { uploader } from '../utils.js';
+import __dirname from '../utils.js';
+import { uploader } from '../utils/multer.js';
 
 const path = __dirname + '/files/products.json';
 
